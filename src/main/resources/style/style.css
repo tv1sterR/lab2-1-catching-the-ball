@@ -1,0 +1,48 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #e8ecf3, #cfd6e3);
+}
+
+.top-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-padding: 10;
+    -fx-spacing: 20;
+    -fx-alignment: center-left;
+    -fx-background-radius: 0 0 10 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.2, 0, 3);
+}
+
+.game-pane {
+    -fx-background-color: linear-gradient(to bottom right, #f7f9fc, #dfe6f1);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0.2, 0, 5);
+}
+
+.ball {
+    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #ff6666, #cc0000);
+    -fx-stroke: #880000;
+    -fx-stroke-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0.3, 0, 5);
+}
+
+.game-over-label {
+    -fx-font-size: 48px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0.3, 0, 5);
+}
+
+.game-over-label {
+    -fx-font-size: 48px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0.3, 0, 5);
+}
+
+.final-score-label {
+    -fx-font-size: 32px;
+    -fx-text-fill: #444;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 15, 0.3, 0, 3);
+}
+

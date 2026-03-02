@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.GameController"
+            stylesheets="@../style/style.css">
+
+    <top>
+        <HBox styleClass="top-bar">
+            <children>
+                <Label fx:id="scoreLabel" text="Счёт: 0" />
+                <Label fx:id="statusLabel" text="Статус: обычный режим" />
+                <Label fx:id="timerLabel" text="60 сек" />
+                <Label fx:id="pauseLabel" text="" />
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <Pane fx:id="gamePane"
+              prefWidth="800"
+              prefHeight="550"
+              styleClass="game-pane"
+              onMouseClicked="#handleMouseClick">
+
+            <children>
+                <Circle fx:id="ball" radius="30" styleClass="ball"/>
+                <Label fx:id="gameOverLabel"
+                       text="Игра окончена"
+                       visible="false"
+                       styleClass="game-over-label"
+                       layoutX="250"
+                       layoutY="200"/>
+                <Label fx:id="finalScoreLabel"
+                       text=""
+                       visible="false"
+                       styleClass="final-score-label"
+                       layoutX="250"
+                       layoutY="270"/>
+            </children>
+
+        </Pane>
+
+    </center>
+
+</BorderPane>
