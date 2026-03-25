@@ -2,6 +2,7 @@ package controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.FillTransition;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -26,8 +27,6 @@ public class GameController implements Initializable {
     @FXML private Label gameOverLabel;
     @FXML private Label finalScoreLabel;
 
-
-
     private final GameViewModel viewModel = new GameViewModel();
     private AnimationTimer movementTimer;
     private boolean paused = false;
@@ -42,56 +41,38 @@ public class GameController implements Initializable {
         scoreLabel.textProperty().bind(viewModel.scoreProperty().asString("Счёт: %d"));
 
         statusLabel.textProperty().bind(
-                javafx.beans.binding.Bindings.when(viewModel.bonusActiveProperty())
+                Bindings.when(viewModel.bonusActiveProperty())
                         .then("Статус: бонус x2")
                         .otherwise("Статус: обычный режим")
         );
 
-        // Реакция на бонус — прозрачность + цвет
+        // Прозрачность и цвет при бонусе
         viewModel.bonusActiveProperty().addListener((obs, oldV, newV) -> {
             if (newV) {
                 ball.setOpacity(0.3);
-
                 FillTransition ft = new FillTransition(Duration.seconds(0.5), ball);
                 ft.setToValue(Color.ORANGE);
                 ft.play();
-
             } else {
                 ball.setOpacity(1.0);
-
                 FillTransition ft = new FillTransition(Duration.seconds(0.5), ball);
                 ft.setToValue(Color.RED);
                 ft.play();
             }
         });
 
-        viewModel.gameActiveProperty().addListener((obs, oldV, newV) -> {
-            if (!newV) {
-                movementTimer.stop();
-                gameOverLabel.setVisible(true);
-                ball.setOpacity(0.2);
-                pauseLabel.setText("");
-
-                // Блокируем клики
-                gamePane.setDisable(true);
-            }
-        });
-
+        // Завершение игры
         viewModel.gameActiveProperty().addListener((obs, oldV, newV) -> {
             if (!newV) {
                 movementTimer.stop();
                 gameOverLabel.setVisible(true);
                 finalScoreLabel.setText("Ваш счёт: " + viewModel.scoreProperty().get());
                 finalScoreLabel.setVisible(true);
-
                 ball.setOpacity(0.2);
                 pauseLabel.setText("");
-
                 gamePane.setDisable(true);
             }
         });
-
-
 
         // Движение шарика
         movementTimer = new AnimationTimer() {
@@ -107,14 +88,25 @@ public class GameController implements Initializable {
                 }
             }
         };
-
         movementTimer.start();
+
+        // УБЕГАНИЕ ОТ КУРСОРА
+        gamePane.setOnMouseMoved(event -> {
+            double dist = Math.hypot(
+                    event.getX() - ball.getCenterX(),
+                    event.getY() - ball.getCenterY()
+            );
+
+            if (dist < 120) {
+                viewModel.repelFromCursor(event.getX(), event.getY());
+            }
+        });
     }
 
     @FXML
     private void handleMouseClick(MouseEvent event) {
 
-        // Двойной клик — пауза
+        // Пауза по двойному клику
         if (event.getClickCount() == 2) {
             togglePause();
             return;
@@ -135,7 +127,7 @@ public class GameController implements Initializable {
             return;
         }
 
-        // Мимо — шарик отскакивает от курсора
+        // Промах — шарик отскакивает
         viewModel.repelFromCursor(event.getX(), event.getY());
     }
 

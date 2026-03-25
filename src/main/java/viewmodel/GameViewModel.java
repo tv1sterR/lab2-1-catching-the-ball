@@ -1,6 +1,7 @@
 package viewmodel;
 
-import javafx.animation.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.*;
 import javafx.util.Duration;
 import model.GameModel;
@@ -12,8 +13,8 @@ public class GameViewModel {
     private final GameModel model = new GameModel();
     private final Random random = new Random();
 
-    private double dx = 3;
-    private double dy = 3;
+    public double dx = 3;
+    public double dy = 3;
 
     private final Timeline bonusTimer;
     private final Timeline bonusDuration;
@@ -24,7 +25,7 @@ public class GameViewModel {
     public GameViewModel() {
 
         bonusTimer = new Timeline(new KeyFrame(Duration.seconds(10), e -> activateBonus()));
-        bonusTimer.setCycleCount(Animation.INDEFINITE);
+        bonusTimer.setCycleCount(Timeline.INDEFINITE);
 
         bonusDuration = new Timeline(new KeyFrame(Duration.seconds(3), e -> deactivateBonus()));
 
@@ -69,6 +70,30 @@ public class GameViewModel {
         model.setBallPosition(newX, newY);
     }
 
+    // УБЕГАНИЕ ОТ КУРСОРА
+    public void repelFromCursor(double mouseX, double mouseY) {
+        double bx = model.ballXProperty().get();
+        double by = model.ballYProperty().get();
+
+        double dxNew = bx - mouseX;
+        double dyNew = by - mouseY;
+
+        double len = Math.sqrt(dxNew * dxNew + dyNew * dyNew);
+        if (len == 0) return;
+
+        // Нормализуем
+        dxNew /= len;
+        dyNew /= len;
+
+        // Сила отталкивания
+        double force = 0.4; // чем больше, тем быстрее убегает
+
+        // ПЛАВНОЕ изменение скорости (интерполяция)
+        dx = dx * 0.85 + dxNew * force;
+        dy = dy * 0.85 + dyNew * force;
+    }
+
+
     private void activateBonus() {
         model.setBonusActive(true);
         bonusDuration.playFromStart();
@@ -89,15 +114,4 @@ public class GameViewModel {
         bonusDuration.play();
         gameCountdown.play();
     }
-    public void repelFromCursor(double mouseX, double mouseY) {
-        double dxNew = model.ballXProperty().get() - mouseX;
-        double dyNew = model.ballYProperty().get() - mouseY;
-
-        double len = Math.sqrt(dxNew * dxNew + dyNew * dyNew);
-        if (len == 0) return;
-
-        dx = dxNew / 15;
-        dy = dyNew / 15;
-    }
-
 }
